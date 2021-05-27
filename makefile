@@ -46,9 +46,10 @@ BUILDFLAGS := --rm --force-rm --compress \
 
 CACHEFLAGS := --no-cache=true --pull
 MOUNTFLAGS := -v $(CURDIR)/data/cache:/var/cache/squid -v $(CURDIR)/data/config:/etc/squid
-NAMEFLAGS  := --name docker_$(CNTNAME) --hostname $(CNTNAME)
+NAMEFLAGS  := --name docker_$(CNTNAME) #--hostname $(CNTNAME)
 OTHERFLAGS := -v /etc/hosts:/etc/hosts:ro -v /etc/localtime:/etc/localtime:ro # -e TZ=Asia/Kolkata
-PORTFLAGS  := -p 3128:3128 -p 3129:3129
+PORTFLAGS  := #-p 3128:3128 -p 3129:3129
+NETFLAGS   := --net=container:vpn
 
 RUNFLAGS   := -c 256 -m 256m -e PGID=$(PGID) -e PUID=$(PUID) -e WEBADMIN=admin -e PASSWORD=insecurebydefault
 
@@ -88,7 +89,7 @@ rm :
 	docker rm -f docker_$(CNTNAME)
 
 run :
-	docker run --rm -it $(NAMEFLAGS) $(RUNFLAGS) $(PORTFLAGS) $(MOUNTFLAGS) $(OTHERFLAGS) $(IMAGETAG)
+	docker run --rm -it $(NETFLAGS) $(NAMEFLAGS) $(RUNFLAGS) $(PORTFLAGS) $(MOUNTFLAGS) $(OTHERFLAGS) $(IMAGETAG)
 
 shell :
 	docker run --rm -it $(NAMEFLAGS) $(RUNFLAGS) $(PORTFLAGS) $(MOUNTFLAGS) $(OTHERFLAGS) --entrypoint $(SHCOMMAND) $(IMAGETAG)
